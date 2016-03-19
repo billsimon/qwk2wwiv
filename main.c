@@ -32,6 +32,10 @@ static int handler(void* user, const char* section, const char* name,
 			pconfig->yourwwivnode = atoi(value);
 		} else if (strcasecmp("theirwwivnode", name) == 0) {
 			pconfig->theirwwivnode = atoi(value);
+		} else if (strcasecmp("remoteid", name) == 0) {
+			pconfig->remoteid = strdup(value);
+		}else if (strcasecmp("yourtag", name) == 0) {
+			pconfig->yourtag = strdup(value);
 		}
 	} else if (strcasecmp("type2sub", section) == 0) {
 		if (pconfig->subcount == 0) {
@@ -74,7 +78,7 @@ int main(int argc, char **argv) {
 	if (strcasecmp(argv[1], "q2w") == 0) {
 		q2w(&configuration);
 	} else if (strcasecmp(argv[1], "w2r") == 0) {\
-		
+		w2r(&configuration);
 	} else {
 		usage();
 		exit(-1);

@@ -16,6 +16,8 @@ struct config {
 	char *temppath;
 	char *wwivin;
 	char *wwivout;
+	char *remoteid;
+	char *yourtag;
 	unsigned short yourwwivnode;
 	unsigned short theirwwivnode;
 	int subcount;
@@ -52,6 +54,9 @@ struct QwkHdr {
 	   	unsigned char   Msgfiller[3];           /* Filler bytes         */
 } __attribute__((packed));
 
+extern void translate(char *in, unsigned int size);
+
 extern int q2w(struct config *conf);
+extern int w2r(struct config *conf);
 
 #endif

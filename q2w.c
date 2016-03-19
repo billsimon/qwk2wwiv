@@ -132,7 +132,15 @@ int q2w(struct config *conf) {
 	sprintf(cmdline, "%s/MESSAGES.DAT", conf->temppath);
 	
 	fptr = fopen(cmdline, "rb");
+	if (!fptr) {
+		printf("Unable to open MESSAGES.DAT\n");
+		return 0;
+	}
 	optr = fopen(conf->wwivin, "wb");
+	if (!optr) {
+		printf("Unable to open %s\n", conf->wwivin);
+		return 0;
+	}
 	fread(&qwkhdr, sizeof(struct QwkHdr), 1, fptr); // skip the first rec
 	while (fread(&qwkhdr, sizeof(struct QwkHdr), 1, fptr)) {
 		memset(tbuf, 0, 128);
