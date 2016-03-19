@@ -3,14 +3,7 @@ Linux QWK &lt;--> WWIV (net) tool
 
 ## to compile:
 
-gcc -c main.c
-gcc -c q2w.c
-cd inih
-gcc -c ini.c
-cd ..
-gcc -o qwk2wwiv main.o q2w.o inih/ini.o
-
-(Yes I need to make a Makefile)
+  make
 
 ## to setup:
 
@@ -23,7 +16,8 @@ change the paths to fit your system
 
 make sure yourwwivnode and theirwwivnode equals the ones you set up earlier.
 
-make mail areas in Board edit, make them network and hosted by your upstream provider, make up sub types for sub numbers
+make mail areas in Board edit, make them network and hosted by your upstream provider, make up sub types for sub numbers, 
+also ensure that you do not set a tagline, as this program will set one for you.
 
 enter the sub types and subnumbers into the ini file.
 
@@ -31,7 +25,7 @@ enter the sub types and subnumbers into the ini file.
 
 make a script that downloads your qwk packet from your host, then changes to the directory where your ini file is, then run
 
-qwk2wwiv q2w vert.ini
+  qwk2wwiv q2w vert.ini
 
 substituting the ini file for your own.
 
@@ -44,4 +38,8 @@ run ./network2 .1
 
 otherwise replace .1 for the correct network number
 
-TODO: Exporting Reply Packets
+to export, simply type
+
+  qwk2wwiv w2r vert.ini
+
+and a rep packet will be made that you can upload to your upstream provider
