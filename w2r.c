@@ -295,6 +295,8 @@ int w2r(struct config *conf) {
 		
 		cvtmsg[strlen(cvtmsg) -1] = '\0'; // get rid of ^Z
 		
+		strip_heart_colors(cvtmsg);
+		
 		sprintf(cvtmsg, "%s\xe3---\xe3 * QWK2WWIV * %s\xe3", cvtmsg, conf->yourtag);
 		
 		msgrecs = (strlen(cvtmsg) / 128) + 1;
@@ -303,9 +305,9 @@ int w2r(struct config *conf) {
 			msgrecs++;
 		}
 		
-		finalbuf = (char *)malloc(msgrecs * 128);
+		finalbuf = (char *)malloc((msgrecs - 1) * 128);
 		
-		memset(finalbuf, 0, msgrecs * 128);
+		memset(finalbuf, 0, (msgrecs - 1) * 128);
 		
 		memcpy(finalbuf, cvtmsg, strlen(cvtmsg));
 		
@@ -319,12 +321,12 @@ int w2r(struct config *conf) {
 		memcpy(qh.Msgrecs,buff,6);
 		
 		translate(finalbuf, strlen(finalbuf));
-		for (i=strlen(finalbuf);i<msgrecs * 128;i++) {
+		for (i=strlen(finalbuf);i<(msgrecs - 1) * 128;i++) {
 			finalbuf[i] = ' ';
 		}
 		
 		fwrite(&qh, sizeof(struct QwkHdr), 1, optr);
-		fwrite(finalbuf, msgrecs * 128, 1, optr);
+		fwrite(finalbuf, (msgrecs - 1) * 128, 1, optr);
 		
 		free(finalbuf);
 		
