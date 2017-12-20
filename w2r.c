@@ -128,7 +128,14 @@ int w2r(struct config *conf) {
 		
 		strip_heart_colors(subject);
 		
-		memcpy(qh.MsgFrom, from, (strlen(from) > 25 ? 25 : strlen(from)));
+		for (i=0;i<strlen(from);i++) {
+			if (from[i] == '#') {
+				memcpy(qh.MsgFrom, from, (i-1 > 25 ? 25 : i-1));
+				break;
+			}
+		}
+
+		/* memcpy(qh.MsgFrom, from, (strlen(from) > 25 ? 25 : strlen(from))); */
 		memcpy(qh.MsgSubj, subject, (strlen(subject) > 25 ? 25 : strlen(subject)));
 		memcpy(qh.MsgTo, "ALL", 3);
 
@@ -284,9 +291,17 @@ int w2r(struct config *conf) {
 		
 		j = 0;
 		for (i=0;i<strlen(msg);i++) {
+			if (msg[i] == '\x4' && msg[i+1] == '0') { // skips ^D0 lines
+				while (msg[i] != '\n') {
+					i++;
+				}
+				i++; // skip the \n too
+			} 
 			if (msg[i] == '\r') {
 				cvtmsg[j] = '\xe3';
 				i++;
+			} else if (msg[i] == '\x1') { // strip soft line ending markers
+				continue;
 			} else {
 				cvtmsg[j] = msg[i];
 			}

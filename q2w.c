@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include <time.h>
 
 #include "qwk2wwiv.h"
 
@@ -102,6 +103,10 @@ int q2w(struct config *conf) {
 	int qday,qmonth,qyear,qhour,qmin; 
 	DIR *dirptr;
 	struct dirent *next_file;
+
+	char dt[14];
+	struct tm tm;
+	time_t timestamp;
 	
 	pos = 0;
 	memset(cmdline, 0, 1024);
@@ -201,14 +206,24 @@ int q2w(struct config *conf) {
 
 			/* Append the Date to the text */
 
-			qyear = 2000 + ((qwkhdr.Msgdate[6] - '0') * 10) + (qwkhdr.Msgdate[7] - '0');
+			/* qyear = 2000 + ((qwkhdr.Msgdate[6] - '0') * 10) + (qwkhdr.Msgdate[7] - '0');
 			qmonth = (qwkhdr.Msgdate[0] - '0') * 10 + (qwkhdr.Msgdate[1] - '0');
 			qday = (qwkhdr.Msgdate[3] - '0') * 10 + (qwkhdr.Msgdate[4] - '0');
 
 			qhour = (qwkhdr.Msgtime[0] - '0') * 10 + (qwkhdr.Msgtime[1] - '0');
-			qmin = (qwkhdr.Msgtime[3] - '0') * 10 + (qwkhdr.Msgtime[4] - '0');
+			qmin = (qwkhdr.Msgtime[3] - '0') * 10 + (qwkhdr.Msgtime[4] - '0'); */
 
-			sprintf(temp1, "%s %s %d %02d:%02d:00 %04d\r\n", daynames[dayofweek(qyear, qmonth,qday)], monnames[qmonth-1], qday, qhour, qmin, qyear);
+			strcpy(dt, qwkhdr.Msgdate);
+			strcat(dt, " ");
+			strcat(dt, qwkhdr.Msgtime);
+
+			memset(&tm, 0, sizeof(struct tm));
+			strptime(dt, "%m-%d-%y %H:%M", &tm);
+
+			timestamp = mktime(&tm);
+
+			/* sprintf(temp1, "%s %s %d %02d:%02d:00 %04d\r\n", daynames[dayofweek(qyear, qmonth,qday)], monnames[qmonth-1], qday, qhour, qmin, qyear); */
+			sprintf(temp1, "%d\r\n", timestamp);
 			strcpy(wwivbuf+wwivbuf_size, temp1);
 			wwivbuf_size += strlen(temp1);
 			
@@ -235,6 +250,7 @@ int q2w(struct config *conf) {
 
 			wwivhdr.list_len = 0;
 			wwivhdr.length = wwivbuf_size;
+			wwivhdr.daten = timestamp;
 
 			wwivhdr.fromsys = conf->theirwwivnode;
 
